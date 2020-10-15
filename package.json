@@ -1,0 +1,65 @@
+{
+  "name": "@roadiehq/backstage-plugin-security-insights",
+  "version": "0.1.0",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "license": "Apache-2.0",
+  "private": false,
+  "publishConfig": {
+    "access": "public",
+    "main": "dist/index.esm.js",
+    "types": "dist/index.d.ts"
+  },
+  "scripts": {
+    "build": "backstage-cli plugin:build",
+    "build-rollup": "rollup -c",
+    "start": "backstage-cli plugin:serve",
+    "lint": "backstage-cli lint",
+    "test": "backstage-cli test",
+    "diff": "backstage-cli plugin:diff",
+    "prepack": "backstage-cli prepack",
+    "postpack": "backstage-cli postpack",
+    "clean": "backstage-cli clean"
+  },
+  "dependencies": {
+    "@backstage/catalog-model": "^0.1.1-alpha.24",
+    "@backstage/core": "^0.1.1-alpha.24",
+    "@backstage/plugin-catalog": "^0.1.1-alpha.24",
+    "@backstage/theme": "^0.1.1-alpha.24",
+    "@material-ui/core": "^4.11.0",
+    "@material-ui/icons": "^4.9.1",
+    "@material-ui/lab": "^4.0.0-alpha.56",
+    "@octokit/rest": "^18.0.0",
+    "@octokit/types": "^5.0.1",
+    "@types/react-dom": "^16.9.8",
+    "history": "^5.0.0",
+    "moment": "^2.27.0",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-markdown": "^4.3.1",
+    "react-router": "6.0.0-beta.0",
+    "react-router-dom": "^5.2",
+    "react-use": "^15.3.3"
+  },
+  "devDependencies": {
+    "@backstage/cli": "^0.1.1-alpha.24",
+    "@backstage/dev-utils": "^0.1.1-alpha.24",
+    "@rollup/plugin-commonjs": "^14.0.0",
+    "@rollup/plugin-node-resolve": "^8.4.0",
+    "@testing-library/jest-dom": "^5.10.1",
+    "@testing-library/react": "^10.4.1",
+    "@testing-library/user-event": "^12.0.7",
+    "@types/jest": "^26.0.7",
+    "@types/node": "^12.0.0",
+    "@types/react-dom": "^16.9.8",
+    "jest-fetch-mock": "^3.0.3",
+    "rollup": "2.23.1",
+    "rollup-plugin-dts": "1.4.8",
+    "rollup-plugin-esbuild": "^2.4.2",
+    "rollup-plugin-peer-deps-external": "^2.2.3",
+    "rollup-plugin-terser": "^7.0.0"
+  },
+  "files": [
+    "dist"
+  ]
+}
