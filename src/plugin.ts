@@ -15,25 +15,20 @@
  */
 
 import {
-  createApiFactory,
   createPlugin,
   createRouteRef,
 } from '@backstage/core';
-import { githubPullRequestsApiRef, GithubPullRequestsClient } from './api';
+import SecurityInsightsTab from './components/SecurityInsightsTab';
 
-export const insightsRouteRef = createRouteRef({
-  path: '',
-  title: 'GitHub Insights',
-});
 
-export const pullRequestRouteRef = createRouteRef({
+export const rootRouteRef = createRouteRef({
   path: '',
-  title: 'GitHub Pull Requests',
+  title: 'security-insights',
 });
 
 export const plugin = createPlugin({
-  id: 'github',
-  apis: [
-    createApiFactory(githubPullRequestsApiRef, new GithubPullRequestsClient()),
-  ],
+  id: 'security-insights',
+  register({ router }) {
+    router.addRoute(rootRouteRef, SecurityInsightsTab);
+  },
 });

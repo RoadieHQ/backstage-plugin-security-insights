@@ -17,20 +17,20 @@ import React from 'react';
 import { Entity } from '@backstage/catalog-model';
 import { Routes, Route } from 'react-router';
 import { MissingAnnotationEmptyState } from '@backstage/core';
-import { pullRequestRouteRef } from '../plugin';
-import { GITHUB_PULL_REQUESTS_ANNOTATION } from './useProjectName';
-import PullRequestsTab from './PullRequestsTab';
+import { rootRouteRef } from '../plugin';
+import { GITHUB_REPO_ANNOTATION } from './useProjectName';
+import SecurityInsightsTab from './SecurityInsightsTab';
 
 export const isPluginApplicableToEntity = (entity: Entity) =>
-  Boolean(entity.metadata.annotations?.[GITHUB_PULL_REQUESTS_ANNOTATION]);
+  Boolean(entity.metadata.annotations?.[GITHUB_REPO_ANNOTATION]);
 
 export const Router = ({ entity }: { entity: Entity }) => !isPluginApplicableToEntity(entity) 
-  ? <MissingAnnotationEmptyState annotation={GITHUB_PULL_REQUESTS_ANNOTATION} />
+  ? <MissingAnnotationEmptyState annotation={GITHUB_REPO_ANNOTATION} />
   : (
     <Routes>
       <Route
-        path={`/${pullRequestRouteRef.path}`}
-        element={<PullRequestsTab entity={entity} />}
+        path={`/${rootRouteRef.path}`}
+        element={<SecurityInsightsTab entity={entity} />}
       />
     </Routes>
   );

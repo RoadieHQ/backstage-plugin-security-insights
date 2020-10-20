@@ -17,24 +17,18 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import mockFetch from 'jest-fetch-mock';
-import { PullRequestsTableView } from './PullRequestsTable';
+import { SecurityInsightsTableView } from './SecurityInsightsTable';
 
-describe('PullRequestTable', () => {
+describe('SecurityInsightsTable', () => {
   it('should render', async () => {
     mockFetch.mockResponse(() => new Promise(() => {}));
-    const testProjectName = 'test-project-name';
+    const testProjectName = 'octokit/test-project-name';
     const rendered = render(
-      <PullRequestsTableView
+      <SecurityInsightsTableView
         projectName={testProjectName}
         loading={false}
-        pageSize={10}
-        page={0}
         StateFilterComponent={() => <></>}
         prData={[]}
-        retry={() => {}}
-        onChangePage={() => {}}
-        onChangePageSize={() => {}}
-        total={0}
       />,
     );
     expect(await rendered.findByText(testProjectName)).toBeInTheDocument();
@@ -44,7 +38,7 @@ describe('PullRequestTable', () => {
     const testTitle = 'Add migration for entity_search column fix';
     const rendered = render(
       <>
-        <PullRequestsTableView
+        <SecurityInsightsTableView
           projectName="test"
           loading={false}
           pageSize={10}
@@ -56,16 +50,12 @@ describe('PullRequestTable', () => {
               number: 1862,
               title: testTitle,
               url: 'https://api.github.com/repos/spotify/backstage/pulls/1862',
-              createdTime: '2 hours ago',
+              created_at: '2 hours ago',
               creatorNickname: 'dependabot-preview[bot]',
               creatorProfileLink: 'https://github.com/apps/dependabot-preview',
               updatedTime: '2 hours ago',
             },
           ]}
-          retry={() => {}}
-          onChangePage={() => {}}
-          onChangePageSize={() => {}}
-          total={0}
         />
         ,
       </>,

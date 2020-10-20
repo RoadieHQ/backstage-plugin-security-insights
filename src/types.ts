@@ -1,1 +1,1 @@
-export type PullRequestState = null | 'open' | 'fixed' | 'dismissed';
+export type SecurityInsightFilterState = null | 'open' | 'fixed' | 'dismissed';

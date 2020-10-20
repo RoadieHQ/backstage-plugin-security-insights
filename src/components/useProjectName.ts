@@ -16,8 +16,8 @@
 
 import { Entity } from '@backstage/catalog-model';
 
-export const GITHUB_PULL_REQUESTS_ANNOTATION = 'github.com/project-slug';
+export const GITHUB_REPO_ANNOTATION = 'github.com/project-slug';
 
 export const useProjectName = (entity: Entity) => {
-  return entity?.metadata.annotations?.[GITHUB_PULL_REQUESTS_ANNOTATION] ?? '';
+  return entity?.metadata.annotations?.[GITHUB_REPO_ANNOTATION] ?? '';
 };
