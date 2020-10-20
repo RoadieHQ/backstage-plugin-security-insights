@@ -14,49 +14,25 @@
  * limitations under the License.
  */
 
-import React, { FC, useState, useEffect } from 'react';
-import { Typography, Box, Paper, ButtonGroup, Button, Chip, makeStyles } from '@material-ui/core';
+import React, { FC, useState } from 'react';
+import { Typography, Box, Paper, ButtonGroup, Button, Chip } from '@material-ui/core';
 import GitHubIcon from '@material-ui/icons/GitHub';
+import WarningRoundedIcon from '@material-ui/icons/WarningRounded';
+import ErrorRoundedIcon from '@material-ui/icons/ErrorRounded';
+import NoteRoundedIcon from '@material-ui/icons/NoteRounded';
 import { Progress, Table, TableColumn, useApi, githubAuthApiRef } from '@backstage/core';
 import Alert from '@material-ui/lab/Alert';
 import { useProjectName } from '../useProjectName';
+import { useProjectEntity } from '../useProjectEntity';
 import { Octokit } from '@octokit/rest';
 import { useAsync } from 'react-use';
 import moment from 'moment';
-import { SecurityInsightFilterState } from '../../types';
-import { Entity } from '@backstage/catalog-model';
-
-const useStyles = makeStyles(() => ({
-  repositoryTitle: {
-    maxWidth: '100%',
-  }
-}));
-
-type Props = {
-  loading: boolean;
-  projectName: string;
-  prData?: SecurityInsight[];
-  StateFilterComponent: FC<{}>;
-};
-
-type SecurityInsight = {
-  number: number;
-  html_url: string;
-  title: string;
-  state: string;
-  rule: {
-    severity: string;
-    description: string;
-  },
-  tool: {
-    name: string;
-  }
-  created_at: string;
-};
-
-type SecurityInsightsProps = {
-  entity: Entity;
-}
+import {
+  SecurityInsightsTableProps,
+  SecurityInsightsTabProps,
+  SecurityInsight,
+  SecurityInsightFilterState
+} from '../../types';
 
 const getElapsedTime = (start: string) => {
   return moment(start).fromNow();
@@ -65,12 +41,57 @@ const getElapsedTime = (start: string) => {
 const getSeverityBadge = (severityLevel: string|undefined) => {
   switch(severityLevel) {
     case 'warning':
-      return 'Warning'
+      return (
+        <Box display="flex" alignItems="center" fontWeight="fontWeightLight" style={{ color: '#f57c00'}}>
+          <WarningRoundedIcon fontSize="small"/> Warning
+        </Box>
+    );
     case 'error':
-      return 'Error'
+      return (
+        <Box display="flex" alignItems="center" fontWeight="fontWeightLight" style={{ color: '#d32f2f'}}>
+          <ErrorRoundedIcon fontSize="small"/> Error
+        </Box>
+    );
     case 'note':
-      return 'Note'
-    default: return '';
+      return (
+        <Box display="flex" alignItems="center" fontWeight="fontWeightLight" style={{ color: '#1976d2'}}>
+          <NoteRoundedIcon fontSize="small"/> Note
+        </Box>
+    );
+    default: return 'Unknown';
+  }
+}
+
+const getSeverityState = (severityState: SecurityInsightFilterState) => {
+  switch(severityState) {
+    case 'open':
+      return (          
+        <Chip
+          label="Open"
+          color="primary"
+          variant="outlined"
+          size="small"
+        />
+      );
+    case 'dismissed':
+      return (          
+        <Chip
+          label="Dismissed"
+          color="primary"
+          variant="outlined"
+          size="small"
+        />
+      );
+    case 'fixed':
+      return (          
+        <Chip
+          label="Fixed"
+          color="primary"
+          variant="outlined"
+          size="small"
+        />
+      )  ; 
+    default: return 'Unknown';
   }
 }
 
@@ -81,7 +102,7 @@ const generatedColumns: TableColumn[] = [
     width: '50px',
     render: (row: Partial<SecurityInsight>) => (
       <Box fontWeight="fontWeightBold">
-        <a target="_blank" href={row.html_url}>
+        <a target="_blank" rel="noopener noreferrer" href={row.html_url}>
           #{row.number}
         </a>
       </Box>
@@ -104,9 +125,9 @@ const generatedColumns: TableColumn[] = [
   render: (row: Partial<SecurityInsight>) => {
     const severityLevel = row?.rule?.severity;
     return (
-      <Typography variant="body2" noWrap>
+      <Box display="flex" alignItems="center" fontWeight="fontWeightLight" style={{ color: 'red'}}>
         {getSeverityBadge(severityLevel)}
-      </Typography>
+      </Box>
     )
   },
   },
@@ -114,23 +135,7 @@ const generatedColumns: TableColumn[] = [
     title: 'State',
     field: 'state',
     render: (row: Partial<SecurityInsight>) => (
-      row?.state === 'open'
-        ? (
-          <Chip
-            label="Open"
-            color="primary"
-            variant="outlined"
-            size="small"
-          />
-        )
-        : (
-          <Chip
-            label="Dismissed"
-            color="secondary"
-            variant="outlined"
-            size="small"
-          />
-        )
+      row.state && getSeverityState(row.state)
     ),
   },
   {
@@ -155,14 +160,12 @@ const generatedColumns: TableColumn[] = [
   },
 ];
 
-export const SecurityInsightsTableView: FC<Props> = ({
+export const SecurityInsightsTableView: FC<SecurityInsightsTableProps> = ({
   projectName,
   loading,
-  prData,
+  scanData,
   StateFilterComponent,
-}) => {
-  const classes = useStyles();
-  return (
+}) => (
   <Table
     isLoading={loading}
     options={{
@@ -170,10 +173,10 @@ export const SecurityInsightsTableView: FC<Props> = ({
       padding: 'dense'
     }}
     actions={[]}
-    data={prData || []}
+    data={scanData || []}
     title={
       <>
-        <Box display="flex" alignItems="center" className={classes.repositoryTitle}>
+        <Box display="flex" alignItems="center">
           <GitHubIcon />
           <Box mr={1} />
           <Typography variant="h6">{projectName}</Typography>
@@ -183,24 +186,21 @@ export const SecurityInsightsTableView: FC<Props> = ({
     }
     columns={generatedColumns}
   />
-)};
+);
 
-export const SecurityInsightsTable: FC<SecurityInsightsProps> = ({ entity }) => {
-  const [insightsStatusFilter, setinsightsStatusFilter] = useState<SecurityInsightFilterState>(null);
-  // const projectName = useProjectName(entity);
-  const projectName = 'RoadieHQ/backstage'
-  const [owner, repo] = projectName.split('/');
+export const SecurityInsightsTable: FC<SecurityInsightsTabProps> = ({ entity }) => {
+  const [insightsStatusFilter, setInsightsStatusFilter] = useState<SecurityInsightFilterState>(null);
+  const [filteredTableData, setFilteredTableData] = useState<SecurityInsight[]>([]);
+  const {owner, repo} = useProjectEntity(entity);
+  const projectName = useProjectName(entity);
   const auth = useApi(githubAuthApiRef);
-  useEffect(() => {
 
-  }, [insightsStatusFilter]);
   const { value, loading, error } = useAsync(async (): Promise<SecurityInsight[]> => {
     const token = await auth.getAccessToken(['repo']);
     const octokit = new Octokit({auth: token});
     const response = await octokit.request('GET /repos/{owner}/{repo}/code-scanning/alerts', {
-      owner,
-      repo,
-      ...(insightsStatusFilter && {insightsStatusFilter}),
+      owner: 'Roadiehq',
+      repo: 'backstage',
     });
     const data = await response.data;
     return data;
@@ -218,19 +218,28 @@ export const SecurityInsightsTable: FC<SecurityInsightsProps> = ({ entity }) => 
         <ButtonGroup color="primary" aria-label="text primary button group">
           <Button
             color={insightsStatusFilter === 'open' ? 'primary' : 'default'}
-            onClick={() => setinsightsStatusFilter('open')}
+            onClick={() => {
+              insightsStatusFilter === 'open' ? setInsightsStatusFilter(null) : setInsightsStatusFilter('open');
+              value && setFilteredTableData(value.filter(entry => entry.state ===  'open'))}
+            }
           >
             OPEN
           </Button>
           <Button
             color={insightsStatusFilter === 'fixed' ? 'primary' : 'default'}
-            onClick={() => setinsightsStatusFilter('fixed')}
+            onClick={() => {
+              insightsStatusFilter === 'fixed' ? setInsightsStatusFilter(null) : setInsightsStatusFilter('fixed');
+              value && setFilteredTableData(value.filter(entry => entry.state ===  'fixed'))}
+            }
           >
             FIXED
           </Button>
           <Button
             color={insightsStatusFilter === 'dismissed' ? 'primary' : 'default'}
-            onClick={() => setinsightsStatusFilter('dismissed')}
+            onClick={() => {
+              insightsStatusFilter === 'dismissed' ? setInsightsStatusFilter(null) : setInsightsStatusFilter('dismissed');
+              value && setFilteredTableData(value.filter(entry => entry.state ===  'dismissed'))}
+            }
           >
             DISMISSED
           </Button>
@@ -239,14 +248,12 @@ export const SecurityInsightsTable: FC<SecurityInsightsProps> = ({ entity }) => 
     </Paper>
   );
 
-  return (
-    <>
-      <SecurityInsightsTableView
-        prData={value}
-        projectName={projectName}
-        StateFilterComponent={StateFilterComponent}
-        loading={loading}
-      />
-    </>
-  );
+  return value ? (
+    <SecurityInsightsTableView
+      scanData={(insightsStatusFilter !== null && filteredTableData) || value}
+      projectName={projectName}
+      StateFilterComponent={StateFilterComponent}
+      loading={loading}
+    />
+  ) : null;
 };

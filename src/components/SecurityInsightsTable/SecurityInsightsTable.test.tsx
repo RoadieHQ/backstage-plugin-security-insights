@@ -28,7 +28,7 @@ describe('SecurityInsightsTable', () => {
         projectName={testProjectName}
         loading={false}
         StateFilterComponent={() => <></>}
-        prData={[]}
+        scanData={[]}
       />,
     );
     expect(await rendered.findByText(testProjectName)).toBeInTheDocument();
@@ -41,19 +41,21 @@ describe('SecurityInsightsTable', () => {
         <SecurityInsightsTableView
           projectName="test"
           loading={false}
-          pageSize={10}
-          page={0}
           StateFilterComponent={() => <></>}
-          prData={[
+          scanData={[
             {
-              id: 464572082,
               number: 1862,
               title: testTitle,
-              url: 'https://api.github.com/repos/spotify/backstage/pulls/1862',
+              html_url: 'https://api.github.com/repos/spotify/backstage/pulls/1862',
+              state: 'open',
+              rule: {
+                severity: 'warning',
+                description: 'Example warning',
+              },
+              tool: {
+                name: 'CodeQL Scan'
+              },
               created_at: '2 hours ago',
-              creatorNickname: 'dependabot-preview[bot]',
-              creatorProfileLink: 'https://github.com/apps/dependabot-preview',
-              updatedTime: '2 hours ago',
             },
           ]}
         />
