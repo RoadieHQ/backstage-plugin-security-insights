@@ -1,14 +1,7 @@
-import { FC } from 'react';
 import { Entity } from '@backstage/catalog-model';
+import { Dispatch, SetStateAction } from 'react';
 
 export type SecurityInsightFilterState = null | 'open' | 'fixed' | 'dismissed';
-
-export type SecurityInsightsTableProps = {
-  scanData?: SecurityInsight[];
-  loading: boolean;
-  projectName: string;
-  StateFilterComponent: FC<{}>;
-};
 
 export type SecurityInsight = {
   number: number;
@@ -27,4 +20,24 @@ export type SecurityInsight = {
 
 export type SecurityInsightsTabProps = {
   entity: Entity;
+}
+
+export type StateFilterComponentProps = {
+  insightsStatusFilter: SecurityInsightFilterState;
+  value: SecurityInsight[];
+  setInsightsStatusFilter: Dispatch<SetStateAction<SecurityInsightFilterState>>;
+  setFilteredTableData: Dispatch<SetStateAction<SecurityInsight[]>>;
+}
+
+export type UpdateSeverityStatusProps = {
+  owner: string;
+  repo: string;
+  severityData: SecurityInsightFilterState;
+  id: number;
+  tableData: SecurityInsight[];
+  setTableData: Dispatch<SetStateAction<SecurityInsight[]>>;
+}
+
+export type SecurityInsightsWidgetProps = {
+  entity: Entity
 }

@@ -14,5 +14,4 @@
  * limitations under the License.
  */
 
-export * from './GithubPullRequestsApi';
-export * from './GithubPullRequestsClient';
+export { StateFilterComponent } from './StateFilterComponent';
