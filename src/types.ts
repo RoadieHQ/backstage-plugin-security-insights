@@ -2,6 +2,7 @@ import { Entity } from '@backstage/catalog-model';
 import { Dispatch, SetStateAction } from 'react';
 
 export type SecurityInsightFilterState = null | 'open' | 'fixed' | 'dismissed';
+export type SeverityLevels = 'all' | 'warning' | 'error' | 'note';
 
 export type SecurityInsight = {
   number: number;
@@ -9,7 +10,7 @@ export type SecurityInsight = {
   title: string;
   state: SecurityInsightFilterState;
   rule: {
-    severity: 'warning' | 'error' | 'note' ;
+    severity: SeverityLevels;
     description: string;
   },
   tool: {
@@ -40,4 +41,13 @@ export type UpdateSeverityStatusProps = {
 
 export type SecurityInsightsWidgetProps = {
   entity: Entity
+}
+
+export type BranchList = {
+  name: string;
+}
+
+export type IssuesCounterProps = {
+  issues: SecurityInsight[];
+  issueStatus?: SecurityInsightFilterState;
 }

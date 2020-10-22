@@ -15,4 +15,5 @@
  */
 
 export * from './plugin';
+export * from './components/SecurityInsightsWidget';
 export * from './components/Router';

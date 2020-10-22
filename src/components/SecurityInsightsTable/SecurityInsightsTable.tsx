@@ -17,9 +17,6 @@
 import React, { FC, useState } from 'react';
 import { Typography, Box } from '@material-ui/core';
 import GitHubIcon from '@material-ui/icons/GitHub';
-import WarningRoundedIcon from '@material-ui/icons/WarningRounded';
-import ErrorRoundedIcon from '@material-ui/icons/ErrorRounded';
-import NoteRoundedIcon from '@material-ui/icons/NoteRounded';
 import { Progress, Table, TableColumn, useApi, githubAuthApiRef } from '@backstage/core';
 import Alert from '@material-ui/lab/Alert';
 import { Octokit } from '@octokit/rest';
@@ -29,6 +26,7 @@ import { useProjectName } from '../useProjectName';
 import { useProjectEntity } from '../useProjectEntity';
 import { UpdateSeverityStatusModal } from '../UpdateSeverityStatusModal';
 import { StateFilterComponent } from './components/StateFilterComponent';
+import { getSeverityBadge } from '../utils';
 import {
   SecurityInsightsTabProps,
   SecurityInsight,
@@ -38,30 +36,6 @@ import {
 const getElapsedTime = (start: string) => {
   return moment(start).fromNow();
 };
-
-const getSeverityBadge = (severityLevel: string) => {
-  switch(severityLevel) {
-    case 'warning':
-      return (
-        <Box display="flex" alignItems="center" fontWeight="fontWeightLight" style={{ color: '#f57c00'}}>
-          <WarningRoundedIcon fontSize="small"/> Warning
-        </Box>
-    );
-    case 'error':
-      return (
-        <Box display="flex" alignItems="center" fontWeight="fontWeightLight" style={{ color: '#d32f2f'}}>
-          <ErrorRoundedIcon fontSize="small"/> Error
-        </Box>
-    );
-    case 'note':
-      return (
-        <Box display="flex" alignItems="center" fontWeight="fontWeightLight" style={{ color: '#1976d2'}}>
-          <NoteRoundedIcon fontSize="small"/> Note
-        </Box>
-    );
-    default: return 'Unknown';
-  }
-}
 
 export const SecurityInsightsTable: FC<SecurityInsightsTabProps> = ({ entity }) => {
   const [insightsStatusFilter, setInsightsStatusFilter] = useState<SecurityInsightFilterState>(null);

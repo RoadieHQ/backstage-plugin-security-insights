@@ -14,47 +14,131 @@
  * limitations under the License.
  */
 
-import React, { FC } from 'react';
-import { makeStyles } from '@material-ui/core';
+import React, { useState, useEffect, FC } from 'react';
+import {
+  Box,
+  FormControl,
+  FormHelperText,
+  MenuItem,
+  Select,
+  makeStyles,
+} from '@material-ui/core';
 import Alert from '@material-ui/lab/Alert';
-import { InfoCard, Progress, useApi, githubAuthApiRef } from '@backstage/core';
-import { useAsync } from 'react-use';
+import { InfoCard, Progress, StructuredMetadataTable, useApi, githubAuthApiRef } from '@backstage/core';
+import { useAsync, useAsyncFn } from 'react-use';
 import { Octokit } from '@octokit/rest';
 import { useProjectEntity } from '../useProjectEntity';
-import { SecurityInsight, SecurityInsightsWidgetProps } from '../../types';
+import { getSeverityBadge } from '../utils';
+import { 
+  SecurityInsight,
+  BranchList,
+  SecurityInsightsWidgetProps,
+  IssuesCounterProps,
+  SeverityLevels,
+  SecurityInsightFilterState,
+} from '../../types';
 
 const useStyles = makeStyles(theme => ({
   infoCard: {
     marginBottom: theme.spacing(3),
+    minHeight: '487px',
     '& + .MuiAlert-root': {
       marginTop: theme.spacing(3),
     },
   },
 }));
 
+const IssuesCounter: FC<IssuesCounterProps> = ({ issues, issueStatus = null }) => {
+  const countIssues = (type: SecurityInsightFilterState, severityLevel: SeverityLevels) => issues.reduce((acc, cur) =>
+  (cur.state === type || issueStatus === null) && cur.rule.severity === severityLevel ? ++acc : acc, 0);
+
+  const countWarningIssues = countIssues(issueStatus, 'warning');
+  const countErrorIssues = countIssues(issueStatus, 'error');
+  const countNoteIssues = countIssues(issueStatus, 'note');
+  return (
+    <Box display="flex" flexDirection="column">
+      { getSeverityBadge('warning', countWarningIssues) }
+      { getSeverityBadge('error', countErrorIssues) }
+      { getSeverityBadge('note', countNoteIssues) }
+    </Box>
+  )
+};
+
 export const SecurityInsightsWidget: FC<SecurityInsightsWidgetProps> = ({ entity }) => {
   const { owner, repo } = useProjectEntity(entity);
   const classes = useStyles();
   const auth = useApi(githubAuthApiRef);
-  const { value, loading, error } = useAsync(async (): Promise<SecurityInsight[]> => {
+  const [branchName, setBranchName] = useState('');
+
+  const [alerts, getAlerts] = useAsyncFn(async (ref): Promise<SecurityInsight[]> => {
     const token = await auth.getAccessToken(['repo']);
     const octokit = new Octokit({auth: token});
+
     const response = await octokit.request('GET /repos/{owner}/{repo}/code-scanning/alerts', {
-      owner,
-      repo,
+      owner: 'roadiehq',
+      repo: 'backstage',
+      ...(ref && {ref: `refs/heads/${ref}`})
     });
     const data = await response.data;
     return data;
   }, []);
 
-  if (loading) {
-    return <Progress />;
-  } else if (error) {
-    return <Alert severity="error" className={classes.infoCard}>{error.message}</Alert>;
-  }
-  return value ? (
+  const { value, loading, error } = useAsync(async (): Promise<BranchList[]> => {
+    const token = await auth.getAccessToken(['repo']);
+    const octokit = new Octokit({auth: token});
+
+    const response = await octokit.request('GET /repos/{owner}/{repo}/branches', {
+      owner: 'roadiehq',
+      repo: 'backstage',
+    });
+
+    const data = await response.data;
+    return data;
+  }, []);
+
+  useEffect(() => {
+    getAlerts(branchName);
+  }, [branchName]);
+
+  return (
     <InfoCard title="Security Insights" className={classes.infoCard}>
-      Open issues: 8
+      <Box position="relative">
+
+        { error || alerts.error ? (
+          <Alert severity="error" className={classes.infoCard}>
+            {(error as Error | undefined)?.message || alerts.error?.message}
+          </Alert>
+        ) : null}
+    
+        { loading || alerts.loading ? <Box my={3}><Progress /></Box> 
+        : (
+          <>
+            { alerts.value ? 
+              <StructuredMetadataTable metadata={{
+                'Total Issues': <IssuesCounter issues={alerts.value} />,
+                'Open Issues': <IssuesCounter issues={alerts.value} issueStatus="open" />,
+                'Dismissed Issues': <IssuesCounter issues={alerts.value} issueStatus="dismissed" />,
+                'Fixed Isuess': <IssuesCounter issues={alerts.value} issueStatus="fixed" />,
+              }} /> 
+            : null }
+
+            <Box display="flex" mt={3} justifyContent="flex-end">
+              <FormControl>
+                <Select
+                  value={branchName}
+                  displayEmpty
+                  onChange={event => setBranchName((event.target.value as string))}
+                  autoWidth
+                >
+                  <MenuItem value="">Default</MenuItem>
+                  {value?.map(branch => <MenuItem key={branch.name} value={branch.name}>{branch.name}</MenuItem> )}
+                </Select>
+                <FormHelperText>Branch Name</FormHelperText>
+              </FormControl>
+            </Box>
+          </>
+        )}
+      </Box>
     </InfoCard>
-  ) : null;
+  );
 }
