@@ -101,7 +101,18 @@ export const SecurityInsightsWidget: FC<SecurityInsightsWidgetProps> = ({ entity
   }, [branchName]);
 
   return (
-    <InfoCard title="Security Insights" className={classes.infoCard}>
+    <InfoCard
+      title="Security Insights"
+      className={classes.infoCard}
+      deepLink={{
+        link: `https://github.com/${owner}/${repo}/security/code-scanning`,
+        title: 'Security insights',
+        onClick: (e) => {
+          e.preventDefault();
+          window.open(`https://github.com/${owner}/${repo}/security/code-scanning`);
+        }
+      }}
+    >
       <Box position="relative">
 
         { error || alerts.error ? (
