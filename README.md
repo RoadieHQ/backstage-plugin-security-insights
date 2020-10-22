@@ -40,7 +40,7 @@ const ServiceEntityPage = ({ entity }: { entity: Entity }) => (
 
 ## Widget setup
 
-![a list of security alert](https://raw.githubusercontent.com/RoadieHQ/backstage-plugin-security-insights/main/docs/backstage-plugin-security-widget.png)
+![a list of security alert](https://raw.githubusercontent.com/RoadieHQ/backstage-plugin-security-insights/main/docs/backstage-plugin-security-widget-1.png)
 
 1. You must install plugin by following the steps above to add widgets to your Overview.
 
