@@ -41,7 +41,7 @@ import {
 const useStyles = makeStyles(theme => ({
   infoCard: {
     marginBottom: theme.spacing(3),
-    minHeight: '487px',
+    minHeight: '544px',
     '& + .MuiAlert-root': {
       marginTop: theme.spacing(3),
     },
