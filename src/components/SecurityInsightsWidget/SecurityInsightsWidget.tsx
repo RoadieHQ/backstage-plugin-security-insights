@@ -75,8 +75,8 @@ export const SecurityInsightsWidget: FC<SecurityInsightsWidgetProps> = ({ entity
     const octokit = new Octokit({auth: token});
 
     const response = await octokit.request('GET /repos/{owner}/{repo}/code-scanning/alerts', {
-      owner: 'roadiehq',
-      repo: 'backstage',
+      owner,
+      repo,
       ...(ref && {ref: `refs/heads/${ref}`})
     });
     const data = await response.data;
@@ -88,8 +88,8 @@ export const SecurityInsightsWidget: FC<SecurityInsightsWidgetProps> = ({ entity
     const octokit = new Octokit({auth: token});
 
     const response = await octokit.request('GET /repos/{owner}/{repo}/branches', {
-      owner: 'roadiehq',
-      repo: 'backstage',
+      owner,
+      repo,
     });
 
     const data = await response.data;
