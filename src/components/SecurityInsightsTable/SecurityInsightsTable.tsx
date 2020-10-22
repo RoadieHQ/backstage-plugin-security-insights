@@ -49,8 +49,8 @@ export const SecurityInsightsTable: FC<SecurityInsightsTabProps> = ({ entity }) 
     const token = await auth.getAccessToken(['repo']);
     const octokit = new Octokit({auth: token});
     const response = await octokit.request('GET /repos/{owner}/{repo}/code-scanning/alerts', {
-      owner: 'RoadieHQ' || owner,
-      repo: 'backstage' || repo,
+      owner,
+      repo,
     });
     const data = await response.data;
     setTableData(data);
