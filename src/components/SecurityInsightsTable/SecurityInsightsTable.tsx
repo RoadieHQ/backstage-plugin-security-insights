@@ -51,6 +51,7 @@ export const SecurityInsightsTable: FC<SecurityInsightsTabProps> = ({ entity }) 
     const response = await octokit.request('GET /repos/{owner}/{repo}/code-scanning/alerts', {
       owner,
       repo,
+      per_page: 100,
     });
     const data = await response.data;
     setTableData(data);

@@ -106,7 +106,7 @@ export const SecurityInsightsWidget: FC<SecurityInsightsWidgetProps> = ({ entity
       className={classes.infoCard}
       deepLink={{
         link: `https://github.com/${owner}/${repo}/security/code-scanning`,
-        title: 'Security insights',
+        title: 'Security Insights',
         onClick: (e) => {
           e.preventDefault();
           window.open(`https://github.com/${owner}/${repo}/security/code-scanning`);
