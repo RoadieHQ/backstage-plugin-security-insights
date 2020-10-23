@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, { useState, FC } from 'react';
+import React, { useState, useCallback, FC } from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
@@ -52,42 +52,11 @@ const useStyles = makeStyles((theme: Theme) =>
       top: theme.spacing(1),
       color: theme.palette.grey[500],
     },
+    label: {
+      color: 'inherit',
+    }
   }),
 );
-
-const getSeverityState = (severityState: SecurityInsightFilterState, handleClickOpen: () => void) => {
-  switch(severityState) {
-    case 'open':
-      return (          
-        <Chip
-          label="Open"
-          color="primary"
-          variant="outlined"
-          size="small"
-          onClick={handleClickOpen}
-        />
-      );
-    case 'dismissed':
-      return (          
-        <Chip
-          label="Dismissed"
-          color="primary"
-          variant="outlined"
-          size="small"
-        />
-      );
-    case 'fixed':
-      return (          
-        <Chip
-          label="Fixed"
-          color="primary"
-          variant="outlined"
-          size="small"
-        />
-      )  ; 
-    default: return 'Unknown';
-  }
-}
 
 export const UpdateSeverityStatusModal: FC<UpdateSeverityStatusProps> = ({
   owner, repo, severityData, id, tableData, setTableData
@@ -124,10 +93,54 @@ export const UpdateSeverityStatusModal: FC<UpdateSeverityStatusProps> = ({
     setTableData(tableData.map(element => (element.number === id ? {...element, state: 'dismissed'} : element)));
     return data;
   }, []);
+  
+  const getSeverityState = useCallback(
+    (severityState: SecurityInsightFilterState) => {
+    switch(severityState) {
+      case 'open':
+        return (          
+          <Chip
+            label="Open"
+            color="primary"
+            variant="outlined"
+            size="small"
+            classes={{
+              label: classes.label,
+            }}
+            onClick={handleClickOpen}
+          />
+        );
+      case 'dismissed':
+        return (          
+          <Chip
+            label="Dismissed"
+            color="secondary"
+            variant="outlined"
+            size="small"
+            classes={{
+              label: classes.label,
+            }}
+          />
+        );
+      case 'fixed':
+        return (          
+          <Chip
+            label="Fixed"
+            color="primary"
+            variant="outlined"
+            size="small"
+            classes={{
+              label: classes.label,
+            }}
+          />
+        )  ; 
+      default: return 'Unknown';
+    }
+  }, []);
 
   return (
     <>
-      { getSeverityState(severityData, handleClickOpen) }
+      { getSeverityState(severityData) }
       <Dialog
         open={open}
         keepMounted
@@ -151,7 +164,7 @@ export const UpdateSeverityStatusModal: FC<UpdateSeverityStatusProps> = ({
               id="dissmis-type"
               value={dismissedReason}
               onChange={(e) => {
-                errorMsg && setErrorMsg('');
+                setErrorMsg('');
                 setDismissedReason((e.target.value as string))
               }}
               autoWidth
