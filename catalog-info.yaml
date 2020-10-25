@@ -1,0 +1,15 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: backstage-plugin-security-insights
+  description: |
+    Backstage plugin to add security insights for GitHub repos.
+  annotations:
+    github.com/project-slug: roadiehq/backstage-plugin-security-insights
+  tags:
+    - plugin
+    - oss
+spec:
+  type: library
+  owner: group:roadie
+  lifecycle: experimental
