@@ -43,10 +43,6 @@ export type SecurityInsightsWidgetProps = {
   entity: Entity
 }
 
-export type BranchList = {
-  name: string;
-}
-
 export type IssuesCounterProps = {
   issues: SecurityInsight[];
   issueStatus?: SecurityInsightFilterState;
