@@ -14,24 +14,16 @@
  * limitations under the License.
  */
 
-import React, { useState, useEffect, FC } from 'react';
-import {
-  Box,
-  FormControl,
-  FormHelperText,
-  MenuItem,
-  Select,
-  makeStyles,
-} from '@material-ui/core';
+import React, { FC } from 'react';
+import { Box, makeStyles } from '@material-ui/core';
 import Alert from '@material-ui/lab/Alert';
 import { InfoCard, Progress, StructuredMetadataTable, useApi, githubAuthApiRef } from '@backstage/core';
-import { useAsync, useAsyncFn } from 'react-use';
+import { useAsync } from 'react-use';
 import { Octokit } from '@octokit/rest';
 import { useProjectEntity } from '../useProjectEntity';
 import { getSeverityBadge } from '../utils';
 import { 
   SecurityInsight,
-  BranchList,
   SecurityInsightsWidgetProps,
   IssuesCounterProps,
   SeverityLevels,
@@ -41,10 +33,6 @@ import {
 const useStyles = makeStyles(theme => ({
   infoCard: {
     marginBottom: theme.spacing(3),
-    minHeight: '544px',
-    '& + .MuiAlert-root': {
-      marginTop: theme.spacing(3),
-    },
   },
 }));
 
@@ -68,37 +56,19 @@ export const SecurityInsightsWidget: FC<SecurityInsightsWidgetProps> = ({ entity
   const { owner, repo } = useProjectEntity(entity);
   const classes = useStyles();
   const auth = useApi(githubAuthApiRef);
-  const [branchName, setBranchName] = useState('');
 
-  const [alerts, getAlerts] = useAsyncFn(async (ref): Promise<SecurityInsight[]> => {
+  const { value, loading, error } = useAsync(async (): Promise<SecurityInsight[]> => {
     const token = await auth.getAccessToken(['repo']);
     const octokit = new Octokit({auth: token});
 
     const response = await octokit.request('GET /repos/{owner}/{repo}/code-scanning/alerts', {
       owner,
       repo,
-      ...(ref && {ref: `refs/heads/${ref}`})
-    });
-    const data = await response.data;
-    return data;
-  }, []);
-
-  const { value, loading, error } = useAsync(async (): Promise<BranchList[]> => {
-    const token = await auth.getAccessToken(['repo']);
-    const octokit = new Octokit({auth: token});
-
-    const response = await octokit.request('GET /repos/{owner}/{repo}/branches', {
-      owner,
-      repo,
     });
 
     const data = await response.data;
     return data;
   }, []);
-
-  useEffect(() => {
-    getAlerts(branchName);
-  }, [branchName]);
 
   return (
     <InfoCard
@@ -106,7 +76,7 @@ export const SecurityInsightsWidget: FC<SecurityInsightsWidgetProps> = ({ entity
       className={classes.infoCard}
       deepLink={{
         link: `https://github.com/${owner}/${repo}/security/code-scanning`,
-        title: 'Security insights',
+        title: 'Security Insights',
         onClick: (e) => {
           e.preventDefault();
           window.open(`https://github.com/${owner}/${repo}/security/code-scanning`);
@@ -115,38 +85,20 @@ export const SecurityInsightsWidget: FC<SecurityInsightsWidgetProps> = ({ entity
     >
       <Box position="relative">
 
-        { error || alerts.error ? (
+        { error ? (
           <Alert severity="error" className={classes.infoCard}>
-            {(error as Error | undefined)?.message || alerts.error?.message}
+            {(error.message)}
           </Alert>
         ) : null}
     
-        { loading || alerts.loading ? <Box my={3}><Progress /></Box> 
+        { loading ? <Box my={3}><Progress /></Box> 
         : (
           <>
-            { alerts.value ? 
+            { value ? 
               <StructuredMetadataTable metadata={{
-                'Total Issues': <IssuesCounter issues={alerts.value} />,
-                'Open Issues': <IssuesCounter issues={alerts.value} issueStatus="open" />,
-                'Dismissed Issues': <IssuesCounter issues={alerts.value} issueStatus="dismissed" />,
-                'Fixed Isuess': <IssuesCounter issues={alerts.value} issueStatus="fixed" />,
+                'Open Issues': <IssuesCounter issues={value} issueStatus="open" />,
               }} /> 
             : null }
-
-            <Box display="flex" mt={3} justifyContent="flex-end">
-              <FormControl>
-                <Select
-                  value={branchName}
-                  displayEmpty
-                  onChange={event => setBranchName((event.target.value as string))}
-                  autoWidth
-                >
-                  <MenuItem value="">Default</MenuItem>
-                  {value?.map(branch => <MenuItem key={branch.name} value={branch.name}>{branch.name}</MenuItem> )}
-                </Select>
-                <FormHelperText>Branch Name</FormHelperText>
-              </FormControl>
-            </Box>
           </>
         )}
       </Box>
