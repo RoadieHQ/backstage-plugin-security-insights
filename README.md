@@ -73,7 +73,7 @@ const OverviewContent = ({ entity }: { entity: Entity }) => (
 ## Features
 
 - List detected vulnerabilities for your repository, with filtering and search.
-- Show basic statistics widget about detected vulnerabilities for your repository and branches.
+- Show statistics widget about detected vulnerabilities for your repository.
 
 ## Links
 
