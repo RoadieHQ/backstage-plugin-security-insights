@@ -21,7 +21,7 @@ import { InfoCard, Progress, StructuredMetadataTable, useApi, githubAuthApiRef }
 import { useAsync } from 'react-use';
 import { Octokit } from '@octokit/rest';
 import { useProjectEntity } from '../useProjectEntity';
-import { useBaseUrl } from '../useBaseUrl';
+import { useUrl } from '../useUrl';
 import { getSeverityBadge } from '../utils';
 import { 
   SecurityInsight,
@@ -57,14 +57,14 @@ export const SecurityInsightsWidget: FC<SecurityInsightsWidgetProps> = ({ entity
   const { owner, repo } = useProjectEntity(entity);
   const classes = useStyles();
   const auth = useApi(githubAuthApiRef);
-  const baseUrl = useBaseUrl();
+  const { baseUrl, hostname } = useUrl();
 
   const { value, loading, error } = useAsync(async (): Promise<SecurityInsight[]> => {
     const token = await auth.getAccessToken(['repo']);
     const octokit = new Octokit({auth: token});
 
     const response = await octokit.request('GET /repos/{owner}/{repo}/code-scanning/alerts', {
-      ...(baseUrl && {baseUrl}),
+      baseUrl,
       owner,
       repo,
     });
@@ -78,11 +78,11 @@ export const SecurityInsightsWidget: FC<SecurityInsightsWidgetProps> = ({ entity
       title="Security Insights"
       className={classes.infoCard}
       deepLink={{
-        link: `https://github.com/${owner}/${repo}/security/code-scanning`,
+        link: `//${hostname}/${owner}/${repo}/security/code-scanning`,
         title: 'Security Insights',
         onClick: (e) => {
           e.preventDefault();
-          window.open(`https://github.com/${owner}/${repo}/security/code-scanning`);
+          window.open(`//${hostname}/${owner}/${repo}/security/code-scanning`);
         }
       }}
     >

@@ -16,10 +16,15 @@
 
 import { useApi, configApiRef } from '@backstage/core';
 
-export const useBaseUrl = () => {
+export const useUrl = () => {
     const config = useApi(configApiRef);
     const providerConfigs = config.getOptionalConfigArray('integrations.github') ?? [];
     const targetProviderConfig = providerConfigs[0];
-    const baseUrl = targetProviderConfig?.getOptionalString('apiBaseUrl');
-    return baseUrl;
+    const baseUrl = targetProviderConfig?.getOptionalString('apiBaseUrl') || 'https://api.github.com';
+    const hostname = targetProviderConfig?.getOptionalString('host') || 'github.com';
+
+    return {
+      hostname,
+      baseUrl,
+    };
 }
