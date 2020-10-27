@@ -26,7 +26,7 @@ import { useProjectName } from '../useProjectName';
 import { useProjectEntity } from '../useProjectEntity';
 import { UpdateSeverityStatusModal } from '../UpdateSeverityStatusModal';
 import { StateFilterComponent } from './components/StateFilterComponent';
-import { useBaseUrl } from '../useBaseUrl';
+import { useUrl } from '../useUrl';
 import { getSeverityBadge } from '../utils';
 import {
   SecurityInsightsTabProps,
@@ -45,13 +45,13 @@ export const SecurityInsightsTable: FC<SecurityInsightsTabProps> = ({ entity }) 
   const {owner, repo} = useProjectEntity(entity);
   const projectName = useProjectName(entity);
   const auth = useApi(githubAuthApiRef);
-  const baseUrl = useBaseUrl();
+  const { baseUrl } = useUrl();
 
   const { value, loading, error } = useAsync(async (): Promise<SecurityInsight[]> => {
     const token = await auth.getAccessToken(['repo']);
     const octokit = new Octokit({auth: token});
     const response = await octokit.request('GET /repos/{owner}/{repo}/code-scanning/alerts', {
-      ...(baseUrl && {baseUrl}),
+      baseUrl,
       owner,
       repo,
       per_page: 100,
