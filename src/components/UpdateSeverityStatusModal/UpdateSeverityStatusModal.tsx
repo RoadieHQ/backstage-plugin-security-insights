@@ -91,7 +91,7 @@ export const UpdateSeverityStatusModal: FC<UpdateSeverityStatusProps> = ({
       state: 'dismissed',
       dismissed_reason: reason,
     });
-    const data = await response.data;
+    const data = response.data;
     handleClose();
     setTableData(tableData.map(element => (element.number === id ? {...element, state: 'dismissed'} : element)));
     return data;
