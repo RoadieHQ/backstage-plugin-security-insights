@@ -32,6 +32,7 @@ import { useApi, githubAuthApiRef } from '@backstage/core';
 import Alert from '@material-ui/lab/Alert';
 import { useAsyncFn } from 'react-use';
 import { Octokit } from '@octokit/rest';
+import { useBaseUrl } from '../useBaseUrl';
 import {
   UpdateSeverityStatusProps,
   SecurityInsightFilterState
@@ -66,6 +67,7 @@ export const UpdateSeverityStatusModal: FC<UpdateSeverityStatusProps> = ({
   const [dismissedReason, setDismissedReason] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
   const auth = useApi(githubAuthApiRef);
+  const baseUrl = useBaseUrl();
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -82,6 +84,7 @@ export const UpdateSeverityStatusModal: FC<UpdateSeverityStatusProps> = ({
     const octokit = new Octokit({auth: token});
 
     const response = await octokit.request('PATCH /repos/{owner}/{repo}/code-scanning/alerts/{alert_number}', {
+      ...(baseUrl && {baseUrl}),
       owner: 'RoadieHQ' || owner,
       repo: 'backstage' || repo,
       alert_number: id,
