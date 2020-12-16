@@ -7,7 +7,7 @@ export type SeverityLevels = 'all' | 'warning' | 'error' | 'note';
 export type SecurityInsight = {
   number: number;
   html_url: string;
-  title: string;
+  title?: string;
   state: SecurityInsightFilterState;
   rule: {
     severity: SeverityLevels;
