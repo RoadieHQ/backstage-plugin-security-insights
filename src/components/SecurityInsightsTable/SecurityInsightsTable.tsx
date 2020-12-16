@@ -56,7 +56,7 @@ export const SecurityInsightsTable: FC<SecurityInsightsTabProps> = ({ entity }) 
       repo,
       per_page: 100,
     });
-    const data = response.data;
+    const data = response.data as SecurityInsight[];
     setTableData(data);
     return data;
   }, []);

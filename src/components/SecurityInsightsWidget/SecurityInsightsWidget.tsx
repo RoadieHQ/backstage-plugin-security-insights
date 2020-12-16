@@ -69,7 +69,7 @@ export const SecurityInsightsWidget: FC<SecurityInsightsWidgetProps> = ({ entity
       repo,
     });
 
-    const data = response.data;
+    const data = response.data as SecurityInsight[];
     return data;
   }, []);
 
