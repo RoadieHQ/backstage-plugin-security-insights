@@ -15,5 +15,6 @@
  */
 
 import '@testing-library/jest-dom';
+import fetch from 'cross-fetch';
 
-require('jest-fetch-mock').enableMocks();
+global.fetch = fetch;
