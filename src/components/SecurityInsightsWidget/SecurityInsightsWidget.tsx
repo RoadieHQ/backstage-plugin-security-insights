@@ -17,13 +17,19 @@
 import React, { FC } from 'react';
 import { Box, makeStyles } from '@material-ui/core';
 import Alert from '@material-ui/lab/Alert';
-import { InfoCard, Progress, StructuredMetadataTable, useApi, githubAuthApiRef } from '@backstage/core';
+import {
+  InfoCard,
+  Progress,
+  StructuredMetadataTable,
+  useApi,
+  githubAuthApiRef,
+} from '@backstage/core';
 import { useAsync } from 'react-use';
 import { Octokit } from '@octokit/rest';
 import { useProjectEntity } from '../useProjectEntity';
 import { useUrl } from '../useUrl';
 import { getSeverityBadge } from '../utils';
-import { 
+import {
   SecurityInsight,
   SecurityInsightsWidgetProps,
   IssuesCounterProps,
@@ -31,43 +37,63 @@ import {
   SecurityInsightFilterState,
 } from '../../types';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   infoCard: {
     marginBottom: theme.spacing(3),
   },
 }));
 
-const IssuesCounter: FC<IssuesCounterProps> = ({ issues, issueStatus = null }) => {
-  const countIssues = (type: SecurityInsightFilterState, severityLevel: SeverityLevels) => issues.reduce((acc, cur) =>
-  (cur.state === type || issueStatus === null) && cur.rule.severity === severityLevel ? ++acc : acc, 0);
+const IssuesCounter: FC<IssuesCounterProps> = ({
+  issues,
+  issueStatus = null,
+}) => {
+  const countIssues = (
+    type: SecurityInsightFilterState,
+    severityLevel: SeverityLevels
+  ) =>
+    issues.reduce(
+      (acc, cur) =>
+        (cur.state === type || issueStatus === null) &&
+        cur.rule.severity === severityLevel
+          ? ++acc
+          : acc,
+      0
+    );
 
   const countWarningIssues = countIssues(issueStatus, 'warning');
   const countErrorIssues = countIssues(issueStatus, 'error');
   const countNoteIssues = countIssues(issueStatus, 'note');
   return (
     <Box display="flex" flexDirection="column">
-      { getSeverityBadge('warning', countWarningIssues) }
-      { getSeverityBadge('error', countErrorIssues) }
-      { getSeverityBadge('note', countNoteIssues) }
+      {getSeverityBadge('warning', countWarningIssues)}
+      {getSeverityBadge('error', countErrorIssues)}
+      {getSeverityBadge('note', countNoteIssues)}
     </Box>
-  )
+  );
 };
 
-export const SecurityInsightsWidget: FC<SecurityInsightsWidgetProps> = ({ entity }) => {
+export const SecurityInsightsWidget: FC<SecurityInsightsWidgetProps> = ({
+  entity,
+}) => {
   const { owner, repo } = useProjectEntity(entity);
   const classes = useStyles();
   const auth = useApi(githubAuthApiRef);
   const { baseUrl, hostname } = useUrl();
 
-  const { value, loading, error } = useAsync(async (): Promise<SecurityInsight[]> => {
+  const { value, loading, error } = useAsync(async (): Promise<
+    SecurityInsight[]
+  > => {
     const token = await auth.getAccessToken(['repo']);
-    const octokit = new Octokit({auth: token});
+    const octokit = new Octokit({ auth: token });
 
-    const response = await octokit.request('GET /repos/{owner}/{repo}/code-scanning/alerts', {
-      baseUrl,
-      owner,
-      repo,
-    });
+    const response = await octokit.request(
+      'GET /repos/{owner}/{repo}/code-scanning/alerts',
+      {
+        baseUrl,
+        owner,
+        repo,
+      }
+    );
 
     const data = response.data as SecurityInsight[];
     return data;
@@ -83,28 +109,34 @@ export const SecurityInsightsWidget: FC<SecurityInsightsWidgetProps> = ({ entity
         onClick: (e) => {
           e.preventDefault();
           window.open(`//${hostname}/${owner}/${repo}/security/code-scanning`);
-        }
+        },
       }}
     >
       <Box position="relative">
-
-        { error ? (
+        {error ? (
           <Alert severity="error" className={classes.infoCard}>
-            {(error.message)}
+            {error.message}
           </Alert>
         ) : null}
-    
-        { loading ? <Box my={3}><Progress /></Box> 
-        : (
+
+        {loading ? (
+          <Box my={3}>
+            <Progress />
+          </Box>
+        ) : (
           <>
-            { value ? 
-              <StructuredMetadataTable metadata={{
-                'Open Issues': <IssuesCounter issues={value} issueStatus="open" />,
-              }} /> 
-            : null }
+            {value ? (
+              <StructuredMetadataTable
+                metadata={{
+                  'Open Issues': (
+                    <IssuesCounter issues={value} issueStatus="open" />
+                  ),
+                }}
+              />
+            ) : null}
           </>
         )}
       </Box>
     </InfoCard>
   );
-}
+};
