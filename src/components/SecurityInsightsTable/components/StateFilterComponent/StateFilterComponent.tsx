@@ -19,7 +19,10 @@ import { Box, Paper, ButtonGroup, Button } from '@material-ui/core';
 import { StateFilterComponentProps } from '../../../../types';
 
 export const StateFilterComponent: FC<StateFilterComponentProps> = ({
-  insightsStatusFilter, value, setInsightsStatusFilter, setFilteredTableData
+  insightsStatusFilter,
+  value,
+  setInsightsStatusFilter,
+  setFilteredTableData,
 }) => (
   <Paper>
     <Box position="absolute" right={300} top={20}>
@@ -27,27 +30,45 @@ export const StateFilterComponent: FC<StateFilterComponentProps> = ({
         <Button
           color={insightsStatusFilter === 'open' ? 'primary' : 'default'}
           onClick={() => {
-            insightsStatusFilter === 'open' ? setInsightsStatusFilter(null) : setInsightsStatusFilter('open');
-            value && setFilteredTableData(value.filter(entry => entry.state ===  'open'))}
-          }
+            setInsightsStatusFilter(
+              insightsStatusFilter === 'open' ? null : 'open'
+            );
+            if (value) {
+              setFilteredTableData(
+                value.filter((entry) => entry.state === 'open')
+              );
+            }
+          }}
         >
           OPEN
         </Button>
         <Button
           color={insightsStatusFilter === 'fixed' ? 'primary' : 'default'}
           onClick={() => {
-            insightsStatusFilter === 'fixed' ? setInsightsStatusFilter(null) : setInsightsStatusFilter('fixed');
-            value && setFilteredTableData(value.filter(entry => entry.state ===  'fixed'))}
-          }
+            setInsightsStatusFilter(
+              insightsStatusFilter === 'fixed' ? null : 'fixed'
+            );
+            if (value) {
+              setFilteredTableData(
+                value.filter((entry) => entry.state === 'fixed')
+              );
+            }
+          }}
         >
           FIXED
         </Button>
         <Button
           color={insightsStatusFilter === 'dismissed' ? 'primary' : 'default'}
           onClick={() => {
-            insightsStatusFilter === 'dismissed' ? setInsightsStatusFilter(null) : setInsightsStatusFilter('dismissed');
-            value && setFilteredTableData(value.filter(entry => entry.state ===  'dismissed'))}
-          }
+            setInsightsStatusFilter(
+              insightsStatusFilter === 'dismissed' ? null : 'dismissed'
+            );
+            if (value) {
+              setFilteredTableData(
+                value.filter((entry) => entry.state === 'dismissed')
+              );
+            }
+          }}
         >
           DISMISSED
         </Button>

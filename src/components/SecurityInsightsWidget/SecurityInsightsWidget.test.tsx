@@ -24,6 +24,7 @@ import {
 } from '@backstage/core';
 import { rest } from 'msw';
 import { msw } from '@backstage/test-utils';
+// eslint-disable-next-line
 import { MemoryRouter } from 'react-router-dom';
 import { setupServer } from 'msw/node';
 import { alertsResponseMock, entityMock } from '../../mocks/mocks';
