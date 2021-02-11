@@ -15,20 +15,37 @@
  */
 
 import {
+  createComponentExtension,
   createPlugin,
+  createRoutableExtension,
   createRouteRef,
 } from '@backstage/core';
-import SecurityInsightsTab from './components/SecurityInsightsTab';
 
-
-export const rootRouteRef = createRouteRef({
-  path: '',
+export const entityContentRouteRef = createRouteRef({
   title: 'security-insights',
 });
 
-export const plugin = createPlugin({
+export const securityInsightsPlugin = createPlugin({
   id: 'security-insights',
-  register({ router }) {
-    router.addRoute(rootRouteRef, SecurityInsightsTab);
+  routes: {
+    entityContent: entityContentRouteRef,
   },
 });
+
+export const EntityArgoCDContent = securityInsightsPlugin.provide(
+  createRoutableExtension({
+    component: () => import('./components/Router').then((m) => m.Router),
+    mountPoint: entityContentRouteRef,
+  })
+);
+
+export const EntityArgoCDOverviewCard = securityInsightsPlugin.provide(
+  createComponentExtension({
+    component: {
+      lazy: () =>
+        import('./components/SecurityInsightsWidget').then(
+          (m) => m.SecurityInsightsWidget
+        ),
+    },
+  })
+);
