@@ -14,6 +14,27 @@
  * limitations under the License.
  */
 
-export * from './plugin';
-export * from './components/SecurityInsightsWidget';
-export * from './components/Router';
+export {
+  /**
+   * @deprecated From 0.2.0 composability API should be used
+   */
+  securityInsightsPlugin as plugin,
+  securityInsightsPlugin,
+} from './plugin';
+export {
+  /**
+   * @deprecated From 0.2.0 composability API should be used
+   */
+  SecurityInsightsWidget,
+} from './components/SecurityInsightsWidget';
+export {
+  /**
+   * @deprecated From 0.2.0 composability API should be used
+   */
+  Router,
+  /**
+   * @deprecated From 0.2.0 new name 'isSecurityInsightsAvalilable' should be used
+   */
+  isSecurityInsightsAvalilable as isPluginApplicableToEntity,
+  isSecurityInsightsAvalilable,
+} from './components/Router';

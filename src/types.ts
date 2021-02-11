@@ -12,23 +12,23 @@ export type SecurityInsight = {
   rule: {
     severity: SeverityLevels;
     description: string;
-  },
+  };
   tool: {
     name: string;
-  }
+  };
   created_at: string;
 };
 
 export type SecurityInsightsTabProps = {
   entity: Entity;
-}
+};
 
 export type StateFilterComponentProps = {
   insightsStatusFilter: SecurityInsightFilterState;
   value: SecurityInsight[];
   setInsightsStatusFilter: Dispatch<SetStateAction<SecurityInsightFilterState>>;
   setFilteredTableData: Dispatch<SetStateAction<SecurityInsight[]>>;
-}
+};
 
 export type UpdateSeverityStatusProps = {
   owner: string;
@@ -37,13 +37,9 @@ export type UpdateSeverityStatusProps = {
   id: number;
   tableData: SecurityInsight[];
   setTableData: Dispatch<SetStateAction<SecurityInsight[]>>;
-}
-
-export type SecurityInsightsWidgetProps = {
-  entity: Entity
-}
+};
 
 export type IssuesCounterProps = {
   issues: SecurityInsight[];
   issueStatus?: SecurityInsightFilterState;
-}
+};

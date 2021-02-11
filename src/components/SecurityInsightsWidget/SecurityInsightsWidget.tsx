@@ -31,11 +31,11 @@ import { useUrl } from '../useUrl';
 import { getSeverityBadge } from '../utils';
 import {
   SecurityInsight,
-  SecurityInsightsWidgetProps,
   IssuesCounterProps,
   SeverityLevels,
   SecurityInsightFilterState,
 } from '../../types';
+import { Entity } from '@backstage/catalog-model';
 
 const useStyles = makeStyles((theme) => ({
   infoCard: {
@@ -72,9 +72,7 @@ const IssuesCounter: FC<IssuesCounterProps> = ({
   );
 };
 
-export const SecurityInsightsWidget: FC<SecurityInsightsWidgetProps> = ({
-  entity,
-}) => {
+export const SecurityInsightsWidget = ({ entity }: { entity: Entity }) => {
   const { owner, repo } = useProjectEntity(entity);
   const classes = useStyles();
   const auth = useApi(githubAuthApiRef);
