@@ -1086,7 +1086,7 @@
     react-use "^15.3.3"
     zen-observable "^0.8.15"
 
-"@backstage/core@^0.6.0", "@backstage/core@^0.6.1":
+"@backstage/core@^0.6.1":
   version "0.6.1"
   resolved "https://registry.yarnpkg.com/@backstage/core/-/core-0.6.1.tgz#f846d4b4eb00a0db27e2bd69b963deae8279f4bb"
   integrity sha512-+Twa5or1w3l/TcwMPrAEyinE9E8bFndNeRNCWCidMnRVzL7l1iW/kQMfFdPXLHQgQtA44AR8/zVnqxBLk6SkbQ==
