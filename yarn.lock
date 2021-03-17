@@ -916,7 +916,7 @@
     "@backstage/config" "^0.1.2"
     cross-fetch "^3.0.6"
 
-"@backstage/catalog-model@^0.7.0", "@backstage/catalog-model@^0.7.1":
+"@backstage/catalog-model@^0.7.1":
   version "0.7.1"
   resolved "https://registry.yarnpkg.com/@backstage/catalog-model/-/catalog-model-0.7.1.tgz#56089c9e027322241f621398e71c33153f2a83c8"
   integrity sha512-S3hU1RuUqBVy+Xhrr+XIybBLYaXGJTEbOG25GjePCpEujclZlMl8ZWzzsVFluZ8+ydeYERPXweuDi2l7feOHBw==
@@ -930,7 +930,7 @@
     uuid "^8.0.0"
     yup "^0.29.3"
 
-"@backstage/catalog-model@^0.7.3", "@backstage/catalog-model@^0.7.4":
+"@backstage/catalog-model@^0.7.2", "@backstage/catalog-model@^0.7.3", "@backstage/catalog-model@^0.7.4":
   version "0.7.4"
   resolved "https://registry.yarnpkg.com/@backstage/catalog-model/-/catalog-model-0.7.4.tgz#e3cd532ef9e3f27725816985baf2937c7e1a4bcd"
   integrity sha512-KnQidJLJIBWRqYAkbFASLI5JxXi3FLMUWvxtUnN9HbAEzLFYbBqsKz+AIN38vTJoVryaWTKtMI10/vCMLRP7uA==
