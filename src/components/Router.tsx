@@ -21,11 +21,11 @@ import { entityContentRouteRef } from '../plugin';
 import { GITHUB_REPO_ANNOTATION } from './useProjectName';
 import SecurityInsightsTab from './SecurityInsightsTab';
 
-export const isSecurityInsightsAvalilable = (entity: Entity) =>
+export const isSecurityInsightsAvailable = (entity: Entity) =>
   Boolean(entity.metadata.annotations?.[GITHUB_REPO_ANNOTATION]);
 
 export const Router = ({ entity }: { entity: Entity }) =>
-  !isSecurityInsightsAvalilable(entity) ? (
+  !isSecurityInsightsAvailable(entity) ? (
     <MissingAnnotationEmptyState annotation={GITHUB_REPO_ANNOTATION} />
   ) : (
     <Routes>

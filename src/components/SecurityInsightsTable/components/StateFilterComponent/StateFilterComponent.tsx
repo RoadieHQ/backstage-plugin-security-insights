@@ -25,7 +25,7 @@ export const StateFilterComponent: FC<StateFilterComponentProps> = ({
   setFilteredTableData,
 }) => (
   <Paper>
-    <Box position="absolute" right={300} top={20}>
+    <Box position="absolute" right={350} top={20}>
       <ButtonGroup color="primary" aria-label="text primary button group">
         <Button
           color={insightsStatusFilter === 'open' ? 'primary' : 'default'}

@@ -20,6 +20,8 @@ export {
    */
   securityInsightsPlugin as plugin,
   securityInsightsPlugin,
+  EntitySecurityInsightsContent,
+  EntitySecurityInsightsCard,
 } from './plugin';
 export {
   /**
@@ -35,6 +37,6 @@ export {
   /**
    * @deprecated From 0.2.0 new name 'isSecurityInsightsAvalilable' should be used
    */
-  isSecurityInsightsAvalilable as isPluginApplicableToEntity,
-  isSecurityInsightsAvalilable,
+  isSecurityInsightsAvailable as isPluginApplicableToEntity,
+  isSecurityInsightsAvailable,
 } from './components/Router';
