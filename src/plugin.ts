@@ -32,14 +32,14 @@ export const securityInsightsPlugin = createPlugin({
   },
 });
 
-export const EntityArgoCDContent = securityInsightsPlugin.provide(
+export const EntitySecurityInsightsContent = securityInsightsPlugin.provide(
   createRoutableExtension({
     component: () => import('./components/Router').then((m) => m.Router),
     mountPoint: entityContentRouteRef,
   })
 );
 
-export const EntityArgoCDOverviewCard = securityInsightsPlugin.provide(
+export const EntitySecurityInsightsCard = securityInsightsPlugin.provide(
   createComponentExtension({
     component: {
       lazy: () =>
