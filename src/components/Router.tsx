@@ -20,18 +20,26 @@ import { MissingAnnotationEmptyState } from '@backstage/core';
 import { entityContentRouteRef } from '../plugin';
 import { GITHUB_REPO_ANNOTATION } from './useProjectName';
 import SecurityInsightsTab from './SecurityInsightsTab';
+import { useEntity } from "@backstage/plugin-catalog-react";
 
 export const isSecurityInsightsAvailable = (entity: Entity) =>
   Boolean(entity.metadata.annotations?.[GITHUB_REPO_ANNOTATION]);
 
-export const Router = ({ entity }: { entity: Entity }) =>
-  !isSecurityInsightsAvailable(entity) ? (
-    <MissingAnnotationEmptyState annotation={GITHUB_REPO_ANNOTATION} />
+type Props = {
+  /** @deprecated The entity is now grabbed from context instead */
+  entity?: Entity;
+};
+
+export const Router = (_props: Props) => {
+  const { entity } = useEntity();
+  return !isSecurityInsightsAvailable(entity) ? (
+      <MissingAnnotationEmptyState annotation={GITHUB_REPO_ANNOTATION} />
   ) : (
-    <Routes>
-      <Route
-        path={`/${entityContentRouteRef.path}`}
-        element={<SecurityInsightsTab entity={entity} />}
-      />
-    </Routes>
+      <Routes>
+        <Route
+            path={`/${entityContentRouteRef.path}`}
+            element={<SecurityInsightsTab entity={entity} />}
+        />
+      </Routes>
   );
+};
