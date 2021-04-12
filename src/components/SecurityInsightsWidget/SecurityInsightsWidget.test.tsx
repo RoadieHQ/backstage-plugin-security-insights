@@ -29,6 +29,7 @@ import { MemoryRouter } from 'react-router-dom';
 import { setupServer } from 'msw/node';
 import { alertsResponseMock, entityMock } from '../../mocks/mocks';
 import { SecurityInsightsWidget } from './SecurityInsightsWidget';
+import { EntityProvider } from '@backstage/plugin-catalog-react';
 
 const mockGithubAuth = {
   getAccessToken: async (_: string[]) => 'test-token',
@@ -62,7 +63,9 @@ describe('PullRequestsCard', () => {
     const rendered = render(
       <MemoryRouter>
         <ApiProvider apis={apis}>
-          <SecurityInsightsWidget entity={entityMock} />
+          <EntityProvider entity={entityMock}>
+            <SecurityInsightsWidget />
+          </EntityProvider>
         </ApiProvider>
       </MemoryRouter>
     );

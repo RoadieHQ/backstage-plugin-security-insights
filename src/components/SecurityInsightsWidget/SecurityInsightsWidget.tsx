@@ -36,6 +36,7 @@ import {
   SecurityInsightFilterState,
 } from '../../types';
 import { Entity } from '@backstage/catalog-model';
+import { useEntity } from "@backstage/plugin-catalog-react";
 
 const useStyles = makeStyles((theme) => ({
   infoCard: {
@@ -72,7 +73,13 @@ const IssuesCounter: FC<IssuesCounterProps> = ({
   );
 };
 
-export const SecurityInsightsWidget = ({ entity }: { entity: Entity }) => {
+type Props = {
+  /** @deprecated The entity is now grabbed from context instead */
+  entity?: Entity;
+};
+
+export const SecurityInsightsWidget = (_props: Props) => {
+  const { entity } = useEntity();
   const { owner, repo } = useProjectEntity(entity);
   const classes = useStyles();
   const auth = useApi(githubAuthApiRef);
