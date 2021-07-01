@@ -28,7 +28,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
-import { useApi, githubAuthApiRef } from '@backstage/core';
+import { useApi, githubAuthApiRef } from '@backstage/core-plugin-api';
 import Alert from '@material-ui/lab/Alert';
 import { useAsyncFn } from 'react-use';
 import { Octokit } from '@octokit/rest';

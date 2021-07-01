@@ -16,7 +16,7 @@
 import React from 'react';
 import { Entity } from '@backstage/catalog-model';
 import { Routes, Route } from 'react-router';
-import { MissingAnnotationEmptyState } from '@backstage/core';
+import { MissingAnnotationEmptyState } from '@backstage/core-components';
 import { entityContentRouteRef } from '../plugin';
 import { GITHUB_REPO_ANNOTATION } from './useProjectName';
 import SecurityInsightsTab from './SecurityInsightsTab';

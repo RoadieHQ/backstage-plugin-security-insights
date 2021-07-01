@@ -21,7 +21,7 @@ import {
   Content,
   ContentHeader,
   SupportButton,
-} from '@backstage/core';
+} from '@backstage/core-components';
 import { SecurityInsightsTable } from '../SecurityInsightsTable';
 import { Entity } from '@backstage/catalog-model';
 

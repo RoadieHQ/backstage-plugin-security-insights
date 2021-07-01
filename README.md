@@ -4,36 +4,31 @@
 
 ## Plugin Setup
 
-1. If you have standalone app (you didn't clone this repo), then do
+1. If you have standalone app (you didn't clone this repo), then in the [packages/app](https://github.com/backstage/backstage/blob/master/packages/app/) directory of your backstage instance, add the plugin as a package.json dependency:
 
 ```bash
 yarn add @roadiehq/backstage-plugin-security-insights
 ```
 
-3. Add plugin to the list of plugins:
+2. Import the plugin to the [entityPage.tsx](https://github.com/backstage/backstage/blob/master/packages/app/src/components/catalog/EntityPage.tsx) source file:
 
-```ts
-// packages/app/src/plugins.ts
-export { plugin as SecurityInsights } from '@roadiehq/backstage-plugin-security-insights';
-```
+```tsx
+import {
+  SecurityInsightsRouter
+} from '@roadiehq/backstage-plugin-security-insights';
 
-4. Add plugin API to your Backstage instance:
 
-```ts
-// packages/app/src/components/catalog/EntityPage.tsx
-import { Router as SecurityInsightsRouter } from '@roadiehq/backstage-plugin-security-insights';
-
-...
-
-const ServiceEntityPage = ({ entity }: { entity: Entity }) => (
+const serviceEntityPage = (
   <EntityPageLayout>
     ...
-    <EntityPageLayout.Content
-          path="/security-insights"
-          title="Security Insights"
-          element={<SecurityInsightsRouter entity={entity} />}
-        />
+    <EntityLayout.Route
+    path="/security-insights"
+    title="Security Insights">
+    <SecurityInsightsRouter />
+  </EntityLayout.Route>
+    ...
   </EntityPageLayout>
+)
 ```
 
 5. Run backstage app with `yarn start` and navigate to services tabs.
@@ -50,21 +45,21 @@ const ServiceEntityPage = ({ entity }: { entity: Entity }) => (
 // packages/app/src/components/catalog/EntityPage.tsx
 import {
   SecurityInsightsWidget,
-  isPluginApplicableToEntity as isSecurityInsightsAvailable,
+  isSecurityInsightsAvailable,
 } from '@roadiehq/backstage-plugin-security-insights';
 
 ...
-
-const OverviewContent = ({ entity }: { entity: Entity }) => (
-  <Grid container spacing={3}>
+const overviewContent = (
+  <Grid container spacing={3} alignItems="stretch">
     ...
-    {isSecurityInsightsAvailable(entity) && (
-      <>
+    <EntitySwitch>
+      <EntitySwitch.Case if={isSecurityInsightsAvailable}>
         <Grid item md={6}>
-          <SecurityInsightsWidget entity={entity} />
+          <SecurityInsightsWidget/>
         </Grid>
-      </>
-    )}
+      </EntitySwitch.Case>
+    </EntitySwitch>
+    ...
   </Grid>
 );
 
