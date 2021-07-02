@@ -17,7 +17,8 @@
 import React, { FC, useState } from 'react';
 import { Typography, Box } from '@material-ui/core';
 import GitHubIcon from '@material-ui/icons/GitHub';
-import { Progress, Table, TableColumn, useApi, githubAuthApiRef } from '@backstage/core';
+import { useApi, githubAuthApiRef } from '@backstage/core-plugin-api';
+import { Progress, Table, TableColumn } from '@backstage/core-components';
 import Alert from '@material-ui/lab/Alert';
 import { Octokit } from '@octokit/rest';
 import { useAsync } from 'react-use';
