@@ -22,10 +22,10 @@ const serviceEntityPage = (
   <EntityPageLayout>
     ...
     <EntityLayout.Route
-    path="/security-insights"
-    title="Security Insights">
-    <SecurityInsightsRouter />
-  </EntityLayout.Route>
+      path="/security-insights"
+      title="Security Insights">
+      <SecurityInsightsRouter />
+    </EntityLayout.Route>
     ...
   </EntityPageLayout>
 )
