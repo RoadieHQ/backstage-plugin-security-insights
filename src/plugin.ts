@@ -39,6 +39,17 @@ export const EntitySecurityInsightsContent = securityInsightsPlugin.provide(
   })
 );
 
+export const EntityGithubDependabotContent = securityInsightsPlugin.provide(
+  createComponentExtension({
+   component: {
+     lazy: () =>
+       import('./components/GithubDependabotTab').then(
+         (m) => m.GithubDependabotTab
+       ),
+   },
+ })
+);
+
 export const EntitySecurityInsightsCard = securityInsightsPlugin.provide(
   createComponentExtension({
     component: {

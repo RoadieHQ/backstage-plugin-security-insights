@@ -14,7 +14,7 @@ yarn add @roadiehq/backstage-plugin-security-insights
 
 ```tsx
 import {
-  SecurityInsightsRouter
+  EntitySecurityInsightsContent
 } from '@roadiehq/backstage-plugin-security-insights';
 
 
@@ -24,7 +24,7 @@ const serviceEntityPage = (
     <EntityLayout.Route
       path="/security-insights"
       title="Security Insights">
-      <SecurityInsightsRouter />
+      <EntitySecurityInsightsContent />
     </EntityLayout.Route>
     ...
   </EntityPageLayout>

@@ -21,6 +21,7 @@ export {
   securityInsightsPlugin as plugin,
   securityInsightsPlugin,
   EntitySecurityInsightsContent,
+  EntityGithubDependabotContent,
   EntitySecurityInsightsCard,
 } from './plugin';
 export {
