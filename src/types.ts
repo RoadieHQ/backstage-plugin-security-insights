@@ -19,6 +19,10 @@ export type SecurityInsight = {
   created_at: string;
 };
 
+export type SecurityInsightsTabProps = {
+  entity: Entity;
+};
+
 export type StateFilterComponentProps = {
   insightsStatusFilter: SecurityInsightFilterState;
   value: SecurityInsight[];

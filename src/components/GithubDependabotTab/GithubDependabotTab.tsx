@@ -43,7 +43,7 @@ export const GithubDependabotTab = () => {
       </ContentHeader>
       <Grid container spacing={3} direction="column">
         <Grid item>
-          <DependabotAlertsTable entity={entity} />
+          <DependabotAlertsTable />
         </Grid>
       </Grid>
     </Content>
