@@ -15,22 +15,18 @@
  */
 
 import React, { FC, useState } from 'react';
+import { useAsync } from 'react-use';
 import { Typography, Box, Paper, ButtonGroup, Button } from '@material-ui/core';
 import GitHubIcon from '@material-ui/icons/GitHub';
+import Alert from '@material-ui/lab/Alert';
+import { DateTime } from 'luxon';
+import { graphql } from '@octokit/graphql';
 import { useApi, githubAuthApiRef } from '@backstage/core-plugin-api';
 import { Progress, Table, TableColumn, Link } from '@backstage/core-components';
-import Alert from '@material-ui/lab/Alert';
 import { useEntity } from "@backstage/plugin-catalog-react";
-import { useAsync } from 'react-use';
-import moment from 'moment';
-import { graphql } from '@octokit/graphql';
 import { useProjectName } from '../useProjectName';
 import { useUrl } from '../useUrl';
 import { useProjectEntity } from '../useProjectEntity';
-
-const getElapsedTime = (date: string) => {
-  return moment(date).format("YYYY-MM-DD");
-};
 
 type Node = {
   createdAt: string;
@@ -68,7 +64,7 @@ type DenseTableProps = {
 };
 
 const capitalize = (s: string) => {
-  return s.charAt(0).toLocaleUpperCase('en-US') + s.slice(1);
+  return s.charAt(0).toLocaleUpperCase() + s.slice(1);
 };
 
 const getDetailsUrl = (packageName: string, detailsUrl: DetailsUrl, dismissedAt: string) => {
@@ -88,7 +84,7 @@ export const DenseTable: FC<DenseTableProps> = ({ repository, detailsUrl }) => {
     setInsightsStatusFilter(statusFilter);
     if (issues && issues.length > 0) {
       setFilteredTableData(issues);
-    }
+    } else setFilteredTableData([]);
   };
 
   const dismissedIssues = repository.vulnerabilityAlerts.nodes.filter((entry) => entry.dismissedAt !== null)
@@ -105,7 +101,7 @@ export const DenseTable: FC<DenseTableProps> = ({ repository, detailsUrl }) => {
 
   const structuredData = tableData.map(node => {
     return {
-      createdAt: getElapsedTime(node.createdAt),
+      createdAt: DateTime.fromISO(node.createdAt).toLocaleString(),
       state: node.dismissedAt ? 'Dismissed' : 'Open',
       name: getDetailsUrl(node.securityVulnerability.package.name, detailsUrl, node.dismissedAt),
       severity: capitalize((node.securityVulnerability.severity).toLowerCase()),
