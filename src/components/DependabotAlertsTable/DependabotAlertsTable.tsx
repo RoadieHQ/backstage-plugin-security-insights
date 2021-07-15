@@ -74,31 +74,40 @@ const capitalize = (s: string) => {
 const getDetailsUrl = (packageName: string, detailsUrl: DetailsUrl, dismissedAt: string) => {
   const status = dismissedAt ? "closed" : "open";
   const url = `https://${detailsUrl.hostname}/${detailsUrl.owner}/${detailsUrl.repo}/security/dependabot/yarn.lock/${packageName}/${status}`
-  return <Link to={url}>Details</Link>
+  return <Link to={url}>{packageName}</Link>
 };
 
 export const DenseTable: FC<DenseTableProps> = ({ repository, detailsUrl }) => {
   const { entity } = useEntity();
   const projectName = useProjectName(entity);
-  const [filteredTableData, setFilteredTableData] = useState<Node[]>([]);
+  const [filteredTableData, setFilteredTableData] = useState<Node[]>(repository.vulnerabilityAlerts.nodes);
   const [insightsStatusFilter, setInsightsStatusFilter] = useState<any>('all');
+
+
+  const filterAlerts = (statusFilter: string, issues: Node[]) => {
+    setInsightsStatusFilter(statusFilter);
+    if (issues && issues.length > 0) {
+      setFilteredTableData(issues);
+    }
+  };
+
+  const dismissedIssues = repository.vulnerabilityAlerts.nodes.filter((entry) => entry.dismissedAt !== null)
+  const openIssues = repository.vulnerabilityAlerts.nodes.filter((entry) => entry.dismissedAt === null) || null;
 
   const columns: TableColumn[] = [
     { title: 'Name', field: 'name' },
     { title: 'Created', field: 'createdAt' },
     { title: 'State', field: 'state' },
-    { title: 'Details', field: 'details' },
     { title: 'Severity', field: 'severity' },
     { title: 'Patched Version', field: 'patched_version' },
   ];
-  const tableData = filteredTableData.length > 0 ? filteredTableData : repository.vulnerabilityAlerts.nodes
+  const tableData = filteredTableData.length > 0 ? filteredTableData : []
 
   const structuredData = tableData.map(node => {
     return {
       createdAt: getElapsedTime(node.createdAt),
       state: node.dismissedAt ? 'Dismissed' : 'Open',
-      name: node.securityVulnerability.package.name,
-      details: getDetailsUrl(node.securityVulnerability.package.name, detailsUrl, node.dismissedAt),
+      name: getDetailsUrl(node.securityVulnerability.package.name, detailsUrl, node.dismissedAt),
       severity: capitalize((node.securityVulnerability.severity).toLowerCase()),
       patched_version: node.securityVulnerability.firstPatchedVersion.identifier
     };
@@ -117,47 +126,17 @@ export const DenseTable: FC<DenseTableProps> = ({ repository, detailsUrl }) => {
               <ButtonGroup color="primary" aria-label="text primary button group">
                 <Button
                   color={insightsStatusFilter === 'all' ? 'primary' : 'default'}
-                  onClick={() => {
-                    setInsightsStatusFilter(
-                      insightsStatusFilter === 'all'
-                    );
-                    if (repository.vulnerabilityAlerts.nodes) {
-                      setFilteredTableData(
-                        repository.vulnerabilityAlerts.nodes
-                      );
-                    }
-                  }}
-                >
+                  onClick={() => filterAlerts("all", repository.vulnerabilityAlerts.nodes)} >
                   ALL
                 </Button>
                 <Button
                   color={insightsStatusFilter === 'open' ? 'primary' : 'default'}
-                  onClick={() => {
-                    setInsightsStatusFilter(
-                      insightsStatusFilter === 'open' ? null : 'open'
-                    );
-                    if (repository.vulnerabilityAlerts.nodes) {
-                      setFilteredTableData(
-                        repository.vulnerabilityAlerts.nodes.filter((entry) => entry.dismissedAt === null)
-                      );
-                    }
-                  }}
-                >
+                  onClick={() => filterAlerts("open", openIssues)} >
                   OPEN
                 </Button>
                 <Button
                   color={insightsStatusFilter === 'dismissed' ? 'primary' : 'default'}
-                  onClick={() => {
-                    setInsightsStatusFilter(
-                      insightsStatusFilter === 'dismissed' ? null : 'dismissed'
-                    );
-                    if (repository.vulnerabilityAlerts.nodes) {
-                      setFilteredTableData(
-                        repository.vulnerabilityAlerts.nodes.filter((entry) => entry.dismissedAt !== null)
-                      );
-                    }
-                  }}
-                >
+                  onClick={() => filterAlerts("dismissed", dismissedIssues)} >
                   DISMISSED
                 </Button>
               </ButtonGroup>
