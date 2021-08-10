@@ -4,6 +4,12 @@
 
 ![a list of dependabot alerts](https://raw.githubusercontent.com/RoadieHQ/backstage-plugin-security-insights/main/docs/roadie-backstage-dependabot-alerts.png)
 
+
+## Repository migration notice (June/July 2021)
+
+In order to make testing and deployment of our plugins easier we are migrating all Roadie plugins to a monorepo at https://github.com/RoadieHQ/roadie-backstage-plugins.
+The plugins will still be published to the same place on NPM and will have the same package names so nothing should change for consumers of these plugins.
+
 ## Plugin Setup
 
 1. If you have standalone app (you didn't clone this repo), then in the [packages/app](https://github.com/backstage/backstage/blob/master/packages/app/) directory of your backstage instance, add the plugin as a package.json dependency:
